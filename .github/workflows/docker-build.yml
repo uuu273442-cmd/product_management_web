@@ -31,4 +31,26 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/product_management:latest
     
   # step_cd:
-    
+  step_cd:
+    needs: step_ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to server via ssh
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            # send with path folder
+            cd ~/Vscode/Study/Ops/Product-management
+
+            # pull image docker lastest
+            docker compose pull
+
+            # run docker compose
+            docker compose up -d
+
+            # remove image docker dangling
+            docker image prune -f
