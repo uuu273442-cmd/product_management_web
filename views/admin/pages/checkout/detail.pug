@@ -1,0 +1,81 @@
+extends ../../layouts/default.pug
+
+include ../../mixins/alert.pug
+include ../../mixins/moment.pug
+
+block main
+  +alert-error(5000)
+  +alert-success(5000)
+
+  h2 Chi tiết đơn hàng
+
+  .card.mb-3
+    .card-header Thông tin khách hàng
+    .card-body
+      table.table.table-bordered
+        tr
+          th Họ tên
+          td #{order.userInfo.name}
+        tr
+          th Số điện thoại
+          td #{order.userInfo.phone}
+        tr
+          th Địa chỉ
+          td #{order.userInfo.address}
+        tr
+          th Ngày đặt
+          td
+            p
+              +formatDateTime(order.createdAt)
+        tr
+          th Trạng thái
+          td
+            if order.status === 'pending'
+              span.badge.badge-warning Chờ xử lý
+            else if order.status === 'processing'
+              span.badge.badge-primary Đang xử lý
+            else if order.status === 'shipped'
+              span.badge.badge-info Đang giao
+            else if order.status === 'delivered'
+              span.badge.badge-success Đã hoàn thành
+            else if order.status === 'cancelled'
+              span.badge.badge-danger Đã hủy
+
+  .card.mb-3
+    .card-header Danh sách sản phẩm
+    .card-body
+      table.table.table-bordered
+        thead
+          tr
+            th STT
+            th Mã đơn hàng
+            th Số lượng
+            th Giá
+            th Thành tiền
+        tbody
+          each item, idx in order.products
+            tr
+              td #{idx + 1}
+              td #{item.title || item.products_id}
+              td #{item.quantity}
+              td #{item.price}$
+              td #{item.price * item.quantity}$
+        tfoot
+          tr
+            th(colspan="4") Tổng tiền
+            th #{order.totalPrice}$
+
+  .mt-3
+    if role.permissions.includes('checkout_edit')
+      form(action=`/admin/checkout/${order._id}/status?_method=PATCH` method="POST" style="display:inline")
+        label.font-weight-bold Thay đổi trạng thái:
+        select.form-control.form-control-sm.d-inline-block.w-auto(name="status" onchange="this.form.submit()")
+          option(value="pending" selected=(order.status=='pending')) Chờ xử lý
+          option(value="processing" selected=(order.status=='processing')) Đang xử lý
+          option(value="shipped" selected=(order.status=='shipped')) Đang giao
+          option(value="delivered" selected=(order.status=='delivered')) Đã hoàn thành
+          option(value="cancelled" selected=(order.status=='cancelled')) Đã hủy
+    if role.permissions.includes('checkout_delete')
+      form(action=`/admin/checkout/${order._id}/delete?_method=DELETE` method="POST" style="display:inline" onsubmit="return confirm('Bạn chắc chắn muốn xóa đơn hàng này?');")
+        button.btn.btn-danger.ml-2(type="submit") Xóa đơn hàng
+    a.btn.btn-secondary.ml-2(href="/admin/checkout") Quay lại danh sách

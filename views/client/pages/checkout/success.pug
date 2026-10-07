@@ -1,0 +1,87 @@
+extends ../../layouts/default.pug
+
+include ../../mixins/box-head.pug
+include ../../mixins/alert.pug
+
+block main
+  +alert-success(5000)
+  +alert-error(5000)
+
+  .container.my-3
+    .row
+      .col-12
+        +box-head("Đặt hàng thành công")
+
+    .row
+      .col-12
+        if (order.status === 'pending' || order.status === 'processing')
+          div(class="alert alert-success")
+            | Chúc mừng bạn đã đặt hàng thành công! Chúng tôi sẽ xử lý đơn hàng trong thời gian sớm nhất.
+            if (!user)
+              p Hãy đăng nhập để theo dõi đơn hàng
+              a(href="/user/login" class="btn btn-primary") Đăng nhập
+        else if (order.status === 'cancelled')
+          div(class="alert alert-danger")
+            | Đơn hàng này đã bị hủy. Nếu có thắc mắc, vui lòng liên hệ hỗ trợ.
+        else if (order.status === 'delivered')
+          div(class="alert alert-info")
+            | Đơn hàng đã hoàn thành. Cảm ơn bạn đã mua hàng!
+
+        if (order)
+          .row
+            .col-12
+              h4(class="mb-2") Thông tin cá nhân
+              table(class="table table-bordered")
+                tbody
+                  tr
+                    td Họ tên
+                    td
+                      b #{order.userInfo.name}
+                  tr
+                    td Số điện thoại
+                    td
+                      b #{order.userInfo.phone}
+                  tr
+                    td Địa chỉ
+                    td
+                      b #{order.userInfo.address}
+
+          .row 
+            .col-12 
+                h4(class="mb-2") Thông tin đơn hàng 
+                table(class="table table-bordered")
+                  thead 
+                    th STT 
+                    th Ảnh 
+                    th Tên
+                    th Giá
+                    th Số lượng
+                    th Tổng tiền 
+                  tbody 
+                    if (order.products.length > 0)
+                      each item, index in order.products 
+                        tr 
+                          td #{index + 1}
+                          td 
+                            image(
+                              src=item.productInfo.thumbnail 
+                              alt=item.productInfo.title
+                              width="80px"
+                            )
+                          td #{item.productInfo.title}
+                          td #{item.newPrice}
+                          td #{item.quantity}
+                          td #{item.totalPrice}
+
+                if (order.products.length > 0)
+                  h3(class="text-right") Tổng quan đơn hàng: #{order.totalPrice}$
+
+        if (order && (order.status === 'pending' || order.status === 'processing'))
+          form(
+            action=`/checkout/cancel/${order.id}` 
+            method="POST"
+          )
+            button(
+              class="btn btn-danger"
+              type="submit"
+            ) Hủy đơn hàng

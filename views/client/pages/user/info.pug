@@ -1,0 +1,40 @@
+extends ../../layouts/default.pug
+
+include ../../mixins/alert.pug
+
+block main
+  +alert-success(5000)
+  +alert-error(5000)
+  
+  .container.mt-4.mb-5
+    .row.justify-content-center
+      .col-md-8
+        .card.shadow
+          .card-header.bg-primary.text-white
+            h4.mb-0 Thông tin tài khoản
+          .card-body
+            .row
+              .col-md-4.text-center
+                if user.avatar
+                  img(src=user.avatar alt="Avatar" class="img-thumbnail mb-3" style="width: 120px; height: 120px; object-fit: cover;")
+                else
+                  img(src="/path/to/default-avatar.png" alt="Avatar" class="img-thumbnail mb-3" style="width: 120px; height: 120px; object-fit: cover;")
+                a.btn.btn-outline-secondary.btn-sm(href="/user/edit") Chỉnh sửa
+              .col-md-8
+                dl.row
+                  dt.col-sm-4 Họ tên:
+                  dd.col-sm-8 #{user.fullName}
+                  dt.col-sm-4 Email:
+                  dd.col-sm-8 #{user.email}
+                  dt.col-sm-4 Số điện thoại:
+                  dd.col-sm-8 #{user.phone || 'Chưa cập nhật'}
+                  dt.col-sm-4 Trạng thái:
+                  dd.col-sm-8
+                    if user.status == 'active'
+                      span.badge.badge-success Đang hoạt động
+                    else
+                      span.badge.badge-secondary Đã khóa
+            hr
+            .d-flex.justify-content-between
+              a.btn.btn-outline-info(href="/history") Lịch sử đơn hàng
+              a.btn.btn-outline-warning(href="/user/password/reset") Đổi mật khẩu

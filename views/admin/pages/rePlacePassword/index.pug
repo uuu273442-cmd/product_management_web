@@ -1,0 +1,55 @@
+extends ../../layouts/default.pug
+
+include ../../mixins/alert.pug
+include ../../mixins/alowPass.pug
+
+block main 
+  +alert-success(5000)
+  +alert-error(5000)
+
+  h1(class='mb-4') Điều chỉnh thông tin cá nhân
+
+  .card.mb-3
+    .card-header Điều chỉnh thông tin cá nhân
+    .card-body
+      form(
+        action=`${prefixAdmin}/replace-password/edit?_method=PATCH`
+        method="POST"
+      )
+        div(class="form-group")
+          label(for="email") Email
+          div(
+            type="email"
+            class="form-control"
+            id="email"
+          ) #{user.email}
+
+        div(class="form-group")
+          label(for="password") Mật khẩu mới *
+          input(
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+            required
+          )
+          +alowPass()
+
+        div(class="form-group")
+          label(for="password_check") Xác thực lại mật khẩu mới *
+          input(
+            type="password"
+            class="form-control"
+            id="password_check"
+            name="password_check"
+            required
+          )
+        
+        div(class="form-group")
+          button(
+            type="submit"
+            class="btn btn-primary"
+          ) Cập nhật
+        
+
+

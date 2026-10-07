@@ -1,0 +1,65 @@
+extends ../../layouts/default.pug
+
+include ../../mixins/box-head.pug
+include ../../mixins/alert.pug
+
+block main
+  +alert-success(5000)
+  +alert-error(5000)
+
+  .container.my-3
+    .row
+      .col-12
+        +box-head("Giỏ hàng")
+
+    .row
+      .col-12
+        table(class="table table-bordered")
+          thead
+            tr
+              th STT
+              th Ảnh
+              th Tên
+              th Giá
+              th Số lượng
+              th Tổng tiền 
+              th Hành động
+          tbody
+            if carts && carts.products.length > 0
+              each cart, index in carts.products
+                tr
+                  td #{index + 1}
+                  td
+                    img(src=cart.productInfo.thumbnail, alt=cart.productInfo.title width="80px")
+                  td
+                    a(href=`/products/detail/${cart.productInfo.slug}`) #{cart.productInfo.title}
+                  td #{cart.productInfo.newPrice}$
+                  td
+                    input(
+                      type="number"
+                      name="quantity"
+                      max=cart.productInfo.stock
+                      value=cart.quantity
+                      min="1"
+                      item-id=cart.productInfo.id
+                      style="width: 60px"
+                    )
+                  td #{cart.totalPrice}$
+                  td 
+                    a(
+                      href=`/cart/delete/${cart.products_id}`
+                      class="btn btn-danger"
+                    ) Xóa
+            else
+              tr
+                td(colspan="7" class="text-center") Giỏ hàng trống
+        if carts
+          h3(class="text-right") Tổng tiền: #{carts.totalPrice}$
+        
+          if carts && carts.products.length > 0
+            div(class="text-right mb-3")
+              a(
+                href="/checkout"
+                class="btn btn-success"
+              ) Thanh toán
+  script(src="/client/js/cart.js")

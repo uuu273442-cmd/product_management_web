@@ -1,0 +1,32 @@
+extends ../../layouts/default.pug
+
+block main
+  .container.mt-5.mb-5
+    .row.justify-content-center
+      .col-lg-6.col-md-8
+        .card.shadow.rounded-4.border-0
+          .card-header.bg-primary.text-white
+            h4.mb-0 Chỉnh sửa thông tin tài khoản
+          .card-body
+            form(action="/user/edit" method="POST" enctype="multipart/form-data")
+              .mb-3.text-center
+                if user.avatar
+                  img(src=user.avatar alt="Avatar" class="rounded-circle border border-2 border-primary mb-2" style="width: 80px; height: 80px; object-fit: cover;")
+                else
+                  img(src="/path/to/default-avatar.png" alt="Avatar" class="rounded-circle border border-2 border-secondary mb-2" style="width: 80px; height: 80px; object-fit: cover;")
+                br
+                label.form-label(for="avatar") Ảnh đại diện mới:
+                input.form-control(type="file" name="avatar" id="avatar" accept="image/*")
+              .mb-3
+                label.form-label(for="fullName") Họ tên
+                input.form-control(type="text" name="fullName" id="fullName" required value=user.fullName)
+              .mb-3
+                label.form-label(for="email") Email
+                input.form-control(type="email" name="email" id="email" required value=user.email readonly)
+                small.text-muted Email không thể thay đổi
+              .mb-3
+                label.form-label(for="phone") Số điện thoại
+                input.form-control(type="text" name="phone" id="phone" value=user.phone)
+              .d-flex.justify-content-between.mt-4
+                a.btn.btn-secondary(href="/user/info") Hủy
+                button.btn.btn-primary(type="submit") Lưu thay đổi

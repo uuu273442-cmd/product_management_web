@@ -1,0 +1,49 @@
+extends ../../layouts/default.pug
+
+include ../../mixins/moment.pug
+include ../../mixins/box-head.pug
+
+block main
+  .section-products-featured.my-5
+    .container
+      .row
+        .col-12
+          +box-head('Lịch sử đơn hàng của bạn') 
+
+      if orders.length === 0
+        div.alert.alert-info Bạn chưa có đơn hàng nào.
+      else
+        table.table.table-bordered
+          thead
+            tr
+              th STT
+              th Mã đơn
+              th Ngày đặt
+              th Trạng thái
+              th Tổng tiền
+              th Thao tác
+          tbody
+            each order, index in orders
+              tr
+                td #{index + 1}
+                td #{order.cart_id}
+                td 
+                  +formatDateTime(order.createdAt)
+                td
+                  if order.status === 'pending'
+                    span.badge.bg-warning Chờ xử lý
+                  else if order.status === 'processing'
+                    span.badge.bg-primary Đang xử lý
+                  else if order.status === 'shipped'
+                    span.badge.bg-info Đang giao
+                  else if order.status === 'delivered'
+                    span.badge.bg-success Đã hoàn thành
+                  else if order.status === 'cancelled'
+                    span.badge.bg-danger Đã hủy
+                td
+                  | #{order.totalPrice}$
+                td
+                  a.btn.btn-sm.btn-outline-info(href=`/checkout/success/${order.id}`) Xem chi tiết
+                  if order.status === 'pending' || order.status === 'processing'
+                    form(action=`/checkout/cancel/${order.id}` method="POST" style="display:inline")
+                      button.btn.btn-sm.btn-danger(type="submit") Hủy đơn

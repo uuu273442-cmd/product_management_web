@@ -1,0 +1,30 @@
+extends ../../layouts/default.pug
+
+block main
+  .container.mt-4
+    nav(aria-label="breadcrumb")
+      ol.breadcrumb.bg-light.p-2.rounded.shadow-sm
+        li.breadcrumb-item
+          a(href="/") Trang chủ
+        li.breadcrumb-item
+          a(href="/blogs") Bài viết
+        li.breadcrumb-item.active(aria-current="page") #{blog.title}
+
+    h1.mb-3.fw-bold #{blog.title}
+
+    if blog.description
+      p.text-muted.mb-4(style="font-size: 1.1rem; line-height: 1.6") !{blog.description}
+
+    if blog.thumbnail
+      img.mb-4.w-100.rounded.shadow-sm(
+        src=blog.thumbnail,
+        alt=blog.title,
+        style="max-height: 400px; object-fit: cover;"
+      )
+
+    .blog-content
+      != blog.content
+
+    a.mt-4.d-inline-block.btn.btn-outline-secondary(href="/blogs")
+      i.fas.fa-arrow-left.me-1
+      | Quay lại danh sách

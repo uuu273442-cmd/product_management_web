@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: container_web_pm
+    ports:
+      - "8000:3000"
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - pm-networks
+      
+networks:
+  pm-networks:
+    driver: bridge

@@ -1,0 +1,70 @@
+include ../mixins/sub-menu.pug
+
+header.header
+  .container
+    .row.align-items-center
+      .col-3
+        .inner-logo
+          a(href="/")
+            img.logo(src=settingsGeneral.logo ? settingsGeneral.logo : 'client/image/user.png', alt=settingsGeneral.websiteName)
+
+      .col-4
+        form(
+          action="/search"
+          method="GET"
+        )
+          div(class="form-group d-flex mb-0")
+            input(
+              type="text"
+              placeholder="Nhập từ khóa..."
+              class="form-control"
+              name="keyword"
+              value=keyword
+            )
+            button(
+              type="submit"
+              class="btn btn-primary"
+            ) Tìm
+
+      .col-5
+        .inner-menu
+          ul
+            li 
+              a(href="/") Trang chủ
+
+            li(class="sub-menu")
+              - const pathProducts = "/products"
+              a(href=pathProducts) Sản phẩm
+              +sub-menu(layoutCategoryProducts, pathProducts)
+
+            li(class="sub-menu")
+              - const pathBlogs = "/blogs"
+              a(href=pathBlogs) Bản tin
+              +sub-menu(layoutCategoryBlogs, pathBlogs)
+
+            li
+              a(href="/cart") Giỏ hàng (#{totalQuality ? totalQuality : 0})
+
+            if user
+              li 
+                a.d-flex.align-items-center.user-header-link(href="/user/info" style="text-decoration: none;")
+                  if user.avatar
+                    img(src=user.avatar, alt="Avatar" class="rounded-circle border border-2 border-primary shadow-sm user-header-avatar" style="width: 40px; height: 40px; object-fit: cover; transition: 0.2s;")
+                  else
+                    img(src="/path/to/default-avatar.png", alt="Avatar" class="rounded-circle border border-2 border-secondary shadow-sm user-header-avatar" style="width: 40px; height: 40px; object-fit: cover; transition: 0.2s;")
+                  span.ms-2.fw-semibold.text-dark.user-header-name #{user.fullName}
+              li 
+                a(href="/user/logout") Đăng xuất
+
+            else
+              li 
+                a(href="/user/register") Đăng kí
+              li 
+                a(href="/user/login") Đăng nhập 
+            li
+              a(href="/history") Lịch sử đơn hàng
+            li 
+              a(href="/contact") Liên hệ
+            
+          
+            

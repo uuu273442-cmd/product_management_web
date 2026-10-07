@@ -1,0 +1,59 @@
+extends ../../layouts/default
+
+include ../../mixins/moment.pug
+
+block main
+  if (blog.title)
+    h1(class="mb-4") #{blog.title}
+
+  if (blog.createdBy.account_id)
+    div(class="mb-4") Người tạo: <b>#{blog.accountFullName}</b> *
+    div(class="mb-4") Thời gian tạo *
+      p 
+        +formatDateTime(blog.createdBy.createdAt)
+
+  if (blog.updatedBy.length && blog.updatedBy)
+    div(class="mb-4") <b>Lịch sử chỉnh sửa bài viết gần đây:</b> 
+      - const n = Math.floor(blog.updatedBy.length / 2);
+      - for (let i = blog.updatedBy.length - 1; i >= n; i--)
+        div(class="mb-4") Người chỉnh sửa: <b>#{blog.updatedBy[i].accountFullName}</b> * - <b>#{blog.updatedBy[i].titleUpdated}</b>
+        div(class="mb-4") Thời gian chỉnh sửa *
+          p 
+            +formatDateTime(blog.updatedBy[i].updatedAt)
+        div ----------------
+
+  if (blog.category)
+    div(class="mb-4") Danh mục: <b>#{blog.category}</b>
+
+  if (blog.thumbnail)
+    div(class="mb-4")
+      img(
+        src=blog.thumbnail
+        style="width: 100px"
+      )
+
+  if (blog.status)
+    div(class="mb-4")
+      span Trạng thái:
+      if (blog.status === "active")
+        span(class="badge badge-success") Hoạt động
+      else
+        span(class="badge badge-danger") Dừng hoạt động
+
+  if (blog.position)
+    div(class="mb-4") Vị trí: <b>#{blog.position}</b>
+
+  if(blog.description)
+    div(class="mb-4") Mô tả: !{blog.description}
+
+  if(blog.content)
+    div(class="mb-4") Nội dung: !{blog.content}
+
+  if (role.permissions.includes('blogs_edit'))
+    a(
+      href=`${prefixAdmin}/blogs/edit/${blog.id}`
+      class="btn btn-warning btn-sm"
+    ) Điều chỉnh
+
+  script(src="/admin/js/product.js")
+

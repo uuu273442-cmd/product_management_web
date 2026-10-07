@@ -1,0 +1,115 @@
+extends ../../layouts/default.pug
+
+include ../../mixins/alert.pug
+
+block main 
+  if (role.permissions.includes('settings-general_view'))
+    +alert-success(5000)
+    +alert-error(5000)
+
+    h1 Cấu hình chung
+
+    form(
+      action=`${prefixAdmin}/settings/general?_method=PATCH` 
+      method="POST"
+      enctype="multipart/form-data"
+    )
+      div(class="form-group")
+        label(for="websiteName") Tên website
+        input(
+          type="text",
+          class="form-control",
+          id="websiteName",
+          name="websiteName",
+          value=record.websiteName ? record.websiteName : '',
+          required
+        )
+
+      div(
+        class="form-group"
+        upload-image
+      )
+        label(for="logo") Logo
+        input(
+          type="file",
+          class="form-control-file",
+          id="logo",
+          name="logo"
+          accept="image/*"
+          upload-image-input
+        )
+        div(
+          class="image-preview-wrapper"
+        )
+          img(
+            src=record.logo ? record.logo : '',
+            upload-image-preview,
+            class="image-preview"
+          )
+          button(
+            type="button",
+            button-remove-image
+          ) X
+
+      div(class="form-group")
+        label(for="phone") Số điện thoại
+        input(
+          type="text",
+          class="form-control",
+          id="phone",
+          name="phone",
+          value=record.phone ? record.phone : '',
+          required
+        )
+
+      div(class="form-group")
+        label(for="facebook") Facebook
+        input(
+          type="text",
+          class="form-control",
+          id="facebook",
+          name="facebook",
+          value=record.facebook ? record.facebook : '',
+          required
+        )
+
+      div(class="form-group")
+        label(for="email") Email
+        input(
+          type="email",
+          class="form-control",
+          id="email",
+          name="email",
+          value=record.email ? record.email : '',
+          required
+        )
+
+      div(class="form-group")
+        label(for="address") Địa chỉ
+        input(
+          type="text",
+          class="form-control",
+          id="address",
+          name="address",
+          value=record.address ? record.address : '',
+          required
+        )
+
+      div(class="form-group")
+        label(for="copyright") Copyright
+        input(
+          type="text",
+          class="form-control",
+          id="copyright",
+          name="copyright",
+          value=record.copyright ? record.copyright : '',
+          required
+        ) 
+
+      div(class="form-group")
+        button(
+          type="submit"
+          class="btn btn-primary"
+        ) Lưu
+  else 
+    p bạn không có quyền truy cập vào

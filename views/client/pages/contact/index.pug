@@ -1,0 +1,51 @@
+extends ../../layouts/default.pug
+
+block main
+  .container.mt-5.mb-5
+    .row.justify-content-center
+      .col-md-8.col-lg-6
+        h2.mb-4.text-center.text-primary Liên hệ với chúng tôi
+        .card.shadow-lg.rounded-4.border-0(style="background: linear-gradient(135deg, #f8fafc 60%, #e0e7ff 100%);")
+          .card-body.p-4
+            ul.list-unstyled.mb-4
+              li.mb-4.d-flex.align-items-center.gap-3
+                span.bg-white.rounded-circle.shadow.p-3.d-flex.align-items-center.justify-content-center(style="width:60px;height:60px;")
+                  i.fas.fa-envelope.fa-2x.text-danger
+                .flex-grow-1
+                  b.text-dark Gmail:
+                  br
+                  a.fw-semibold.text-decoration-none.text-secondary(href=settingsGeneral.email ? settingsGeneral.email : 'mailto:abc@example.com' style="font-size:1.1rem;" onmouseover="this.style.color='#d7263d'" onmouseout="this.style.color='#6c757d'") #{settingsGeneral.email ? settingsGeneral.email : 'abc@example.com'}
+              li.mb-4.d-flex.align-items-center.gap-3
+                span.bg-white.rounded-circle.shadow.p-3.d-flex.align-items-center.justify-content-center(style="width:60px;height:60px;")
+                  i.fas.fa-phone.fa-2x.text-success
+                .flex-grow-1
+                  b.text-dark Số điện thoại:
+                  br
+                  a.fw-semibold.text-decoration-none.text-secondary(href=settingsGeneral.phone ? settingsGeneral.phone : 'tel:0123456789' style="font-size:1.1rem;" onmouseover="this.style.color='#198754'" onmouseout="this.style.color='#6c757d'") #{settingsGeneral.phone ? settingsGeneral.phone : '0123 456 789'}
+              li.mb-4.d-flex.align-items-center.gap-3
+                span.bg-white.rounded-circle.shadow.p-3.d-flex.align-items-center.justify-content-center(style="width:60px;height:60px;")
+                  i.fab.fa-facebook.fa-2x.text-primary
+                .flex-grow-1
+                  b.text-dark Facebook:
+                  br
+                  a.fw-semibold.text-decoration-none.text-secondary(href=settingsGeneral.facebook ? settingsGeneral.facebook : 'https://facebook.com/yourpage' target="_blank" style="font-size:1.1rem;" onmouseover="this.style.color='#1877f2'" onmouseout="this.style.color='#6c757d'") #{settingsGeneral.facebook ? settingsGeneral.facebook : 'facebook.com/yourpage'}
+            hr
+            p.text-center.text-success.fw-bold.fs-5.mt-4 Hãy liên hệ với chúng tôi qua số này hoặc qua Facebook để được hỗ trợ nhanh nhất!
+  style.
+    .card-body a:hover {
+      text-decoration: underline !important;
+      font-weight: bold;
+    }
+    .card {
+      transition: box-shadow 0.3s;
+    }
+    .card:hover {
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+    }
+    .rounded-4 {
+      border-radius: 1.5rem !important;
+    }
+    .fa-2x {
+      font-size: 2rem !important;
+    }
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js")

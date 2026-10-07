@@ -1,0 +1,39 @@
+extends ../../layouts/default
+
+include ../../mixins/helperRolesDetail
+
+block main
+  if (record.title)
+    h1(class="mb-4") #{record.title}
+
+  if (record.description)
+    div(class="mb-4") Mô tả: <b>#{record.title}</b>
+
+  if arrayModuleName.length > 0
+    - let nameModule = ''
+    each item in arrayModuleName
+      if item == 'products-category'
+        - nameModule = 'Danh mục sản phẩm'
+      else if item == 'products'
+        - nameModule = 'Sản phẩm'
+      else if item == 'roles'
+        - nameModule = 'Phân quyền'
+      else if item == 'accounts'
+        - nameModule = 'Tài khoản'
+      else if item == 'blogs' 
+        - nameModule = 'Bài viết'
+      else if item == 'checkout'
+        - nameModule = 'Đơn hàng'
+      else if item == 'users'
+        - nameModule = 'Người dùng'
+      else if item == 'settings-general'
+        - nameModule = 'Cấu hình chung'
+      else
+        - nameModule = 'Danh mục bài viết'
+      +helperRolesDetail(record, item, nameModule)
+
+  if (role.permissions.includes('roles_edit'))
+    a(
+      href=`${prefixAdmin}/roles/permission`
+      class="btn btn-warning btn-sm"
+    ) Điều chỉnh

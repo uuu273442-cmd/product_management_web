@@ -1,0 +1,58 @@
+extends ../../layouts/default
+
+include ../../mixins/moment.pug
+
+block main
+  if(record.title)
+    h1(class="mb-4") #{record.title}
+  
+  if (record.createdBy.account_id)
+    div(class="mb-4") Người tạo: <b>#{record.accountFullName}</b> *
+    div(class="mb-4") Thời gian tạo *
+      p 
+        +formatDateTime(record.createdBy.createdAt)
+
+  if (record.updatedBy.length && record.updatedBy)
+    div(class="mb-4") <b>Lịch sử chỉnh sửa danh mục bài viết gần đây:</b> 
+      - const n = Math.floor(record.updatedBy.length / 2);
+      - for (let i = record.updatedBy.length - 1; i >= n; i--)
+        div(class="mb-4") Người chỉnh sửa: <b>#{record.updatedBy[i].accountFullName}</b> * - <b>#{record.updatedBy[i].titleUpdated}</b>
+        div(class="mb-4") Thời gian chỉnh sửa *
+          p 
+            +formatDateTime(record.updatedBy[i].updatedAt)
+        div ----------------
+
+  if(record.category == '')
+    div(class="mb-4") Đây là danh mục cha! 
+  else 
+    div(class="mb-4") Danh mục cha: <b>#{record.category}</b>
+
+  if (record.thumbnail)
+    div(class="mb-4")
+      img(
+        src=record.thumbnail
+        style="width: 100px"
+      )
+
+  if (record.status)
+    div(class="mb-4")
+      span Trạng thái:
+      if (record.status === "active")
+        span(class="badge badge-success") Hoạt động
+      else
+        span(class="badge badge-danger") Dừng hoạt động
+
+  if (record.position)
+    div(class="mb-4") Vị trí: <b>#{record.position}</b>
+
+  if(record.description)
+    div(class="mb-4") Mô tả: !{record.description}
+
+  if (role.permissions.includes('blogs-category_edit'))
+    a(
+      href=`${prefixAdmin}/blogs-category/edit/${record.id}`
+      class="btn btn-warning btn-sm"
+    ) Điều chỉnh
+
+  script(src="/admin/js/product.js")
+

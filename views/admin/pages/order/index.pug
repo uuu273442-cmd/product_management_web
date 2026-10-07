@@ -1,0 +1,83 @@
+extends ../../layouts/default.pug
+
+include ../../mixins/alert.pug
+include ../../mixins/pagination.pug
+include ../../mixins/moment.pug
+
+block main
+  +alert-error(5000)
+  +alert-success(5000)
+
+  h1 Quản lý đơn hàng
+
+  .card.mb-3
+    .card-header Bộ lọc và Tìm kiếm
+    .card-body
+      form(method="get" action="/admin/orders")
+        .row
+          .col-md-3
+            select.form-control(name="status")
+              option(value="") Tất cả trạng thái
+              option(value="pending" selected=(filterStatus=='pending')) Chờ xử lý
+              option(value="processing" selected=(filterStatus=='processing')) Đang xử lý
+              option(value="shipped" selected=(filterStatus=='shipped')) Đang giao
+              option(value="delivered" selected=(filterStatus=='delivered')) Đã hoàn thành
+              option(value="cancelled" selected=(filterStatus=='cancelled')) Đã hủy
+          .col-md-5
+            input.form-control(type="text" name="keyword" placeholder="Tìm theo tên, SĐT, địa chỉ" value=keyword)
+          .col-md-2
+            button.btn.btn-primary(type="submit") Lọc / Tìm kiếm
+
+  .card.mb-3
+    .card-header Danh sách đơn hàng
+    .card-body
+      table.table.table-hover.table-bordered
+        thead
+          tr
+            th STT
+            th Tên khách
+            th SĐT
+            th Địa chỉ
+            th Ngày đặt
+            th Trạng thái
+            th Tổng tiền
+            th Hành động
+        tbody
+          if orders.length === 0
+            tr
+              td(colspan="8") Không có đơn hàng nào!
+          else
+            each order, index in orders
+              tr
+                td #{(pagination.currentPage - 1) * pagination.limitItem + (index + 1)}
+                td #{order.userInfo.name}
+                td #{order.userInfo.phone}
+                td #{order.userInfo.address}
+                td +formatDateTime(order.createdAt)
+                td
+                  if order.status === 'pending'
+                    span.badge.badge-warning Chờ xử lý
+                  else if order.status === 'processing'
+                    span.badge.badge-primary Đang xử lý
+                  else if order.status === 'shipped'
+                    span.badge.badge-info Đang giao
+                  else if order.status === 'delivered'
+                    span.badge.badge-success Đã hoàn thành
+                  else if order.status === 'cancelled'
+                    span.badge.badge-danger Đã hủy
+                td #{order.products.reduce((sum, p) => sum + (p.price * p.quantity), 0)} đ
+                td
+                  if role.permissions.includes('order_view')
+                    a.btn.btn-sm.btn-info(href=`/admin/orders/${order._id}`) Chi tiết
+                  if role.permissions.includes('order_edit')
+                    form(action=`/admin/orders/${order._id}/status` method="POST" style="display:inline")
+                      select.form-control.form-control-sm(name="status" onchange="this.form.submit()")
+                        option(value="pending" selected=(order.status=='pending')) Chờ xử lý
+                        option(value="processing" selected=(order.status=='processing')) Đang xử lý
+                        option(value="shipped" selected=(order.status=='shipped')) Đang giao
+                        option(value="delivered" selected=(order.status=='delivered')) Đã hoàn thành
+                        option(value="cancelled" selected=(order.status=='cancelled')) Đã hủy
+                  if role.permissions.includes('order_delete')
+                    form(action=`/admin/orders/${order._id}/delete` method="POST" style="display:inline" onsubmit="return confirm('Bạn chắc chắn muốn xóa đơn hàng này?');")
+                      button.btn.btn-sm.btn-danger(type="submit") Xóa
+      +pagination(pagination) 

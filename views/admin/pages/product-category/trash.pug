@@ -1,0 +1,95 @@
+extends ../../layouts/default.pug
+
+include ../../mixins/filter-status.pug
+include ../../mixins/search.pug
+include ../../mixins/form-change-multi.pug
+include ../../mixins/alert.pug
+include ../../mixins/table.pug
+include ../../mixins/moment
+
+block main
+  if (role.permissions.includes('products-category_view'))
+    +alert-success(5000)
+    +alert-error(5000)
+
+    h1 Thùng rác
+
+    .card.mb-3
+      .card-header Bộ lọc và Tìm kiếm
+      .card-body
+        .row
+
+          .col-6
+            +filterStatus(filterStatus)
+
+          .col-6
+            +search(keyword)
+
+    .card.mb-3
+      .card-header Danh sách
+        .card-body
+          .row
+            .col-8
+            .col-md-6.d-flex
+              if (role.permissions.includes('products-category_edit'))
+                +form-change-multi(`${prefixAdmin}/products-category/trash/change-multi?_method=PATCH`, "permanentlyDelete-all")
+
+            .col-6.d-flex
+              .ml-auto
+                a(
+                  href=`${prefixAdmin}/products-category`
+                  class="btn btn-outline-primary"
+                )
+                  i(class="fas fa-arrow-left")
+
+        table(
+          class="table table-hover table-sm"
+          checkbox-multi
+        )
+          thead
+            tr
+              th
+                if (role.permissions.includes('products-category_edit'))
+                  input(type="checkbox" name="checkall")
+              th STT
+              th Hình ảnh
+              th Tiêu đề
+              th Thời gian bị xóa
+              th Trạng thái
+              th Người xóa/ Thời gian xóa
+              th Hành động
+
+          tbody
+            if (records)
+              +table(records, 'trash')
+
+    if (role.permissions.includes('products-category_edit'))  
+      form(
+        action="",
+        method="POST"
+        id="form-change-status"
+        data-path=`${prefixAdmin}/products-category/trash/change-status`
+      )
+
+    if (role.permissions.includes('products-category_delete'))
+      form(
+        action="",
+        method="POST"
+        id="form-delete-item"
+        data-path=`${prefixAdmin}/products-category/trash/permanent-delete`
+      )
+      
+    if (role.permissions.includes('products-category_edit'))
+      form(
+        action="",
+        method="POST"
+        id="form-recovery-item"
+        data-path=`${prefixAdmin}/products-category/trash/recovery`
+      )
+
+    script(src="/admin/js/product.js")
+    script(src="/admin/js/trash.js")
+  else 
+    p Bạn không được cấp quyền xem danh sách sản phẩm!
+
+

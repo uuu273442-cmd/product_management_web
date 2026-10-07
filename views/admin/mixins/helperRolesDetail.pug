@@ -1,0 +1,22 @@
+mixin helperRolesDetail(record, data, nameData)
+  - let check = false
+  each item in record.permissions
+    - const [name, task] = item.split('_')
+    if name == data
+      if !check
+        div.mb-2
+          b #{nameData}
+        ul
+        - check = true
+      - let nameTask = ''
+      if task == 'view'
+        - nameTask = 'xem'
+      else if task == 'create'
+        - nameTask = 'tạo'
+      else if task == 'edit'
+        - nameTask = 'chỉnh sửa'
+      else if task == 'delete'
+        - nameTask = 'xóa'
+      else
+        - nameTask = 'Phân quyền'
+      li #{nameTask}

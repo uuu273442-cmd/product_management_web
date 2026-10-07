@@ -1,0 +1,38 @@
+extends ../../layouts/default
+
+block main
+  if(records.fullName)
+    h1(class="mb-4") #{records.fullName}
+
+  if(records.email)
+    div(class="mb-4") email: <b>#{records.email}</b>
+
+  if (data)
+    each item in data
+      if (item.id == records.role_id)
+        div(class="mb-4") chức vụ: <b>#{item.title}</b>
+        break
+
+  if (records.avatar)
+    div(class="mb-4")
+      img(
+        src=records.avatar
+        style="width: 100px"
+      )
+
+  if (records.status)
+    div(class="mb-4")
+      span Trạng thái:
+      if (records.status === "active")
+        span(class="badge badge-success") Hoạt động
+      else
+        span(class="badge badge-danger") Dừng hoạt động
+
+  if (role.permissions.includes('accounts_edit')) 
+    a(
+      href=`${prefixAdmin}/accounts/edit/${records.id}`
+      class="btn btn-warning btn-sm"
+    ) Điều chỉnh
+
+  script(src="/admin/js/product.js")
+

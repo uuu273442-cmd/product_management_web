@@ -1,0 +1,70 @@
+extends ../../layouts/default
+
+include ../../mixins/moment.pug
+
+block main
+  if (product.title)
+    h1(class="mb-4") #{product.title}
+
+  div(class="mb-4") Nổi bật: <b> #{product.featured == "1" ? "có" : "không"} </b>
+
+  if (product.createdBy.account_id)
+    div(class="mb-4") Người tạo: <b>#{product.accountFullName}</b> *
+    div(class="mb-4") Thời gian tạo *
+      p 
+        +formatDateTime(product.createdBy.createdAt)
+
+  if (product.updatedBy.length && product.updatedBy)
+    div(class="mb-4") <b>Lịch sử chỉnh sửa sản phẩm gần đây:</b> 
+      - const n = Math.floor(product.updatedBy.length / 2);
+      - for (let i = product.updatedBy.length - 1; i >= n; i--)
+        div(class="mb-4") Người chỉnh sửa: <b>#{product.updatedBy[i].accountFullName}</b> * - <b>#{product.updatedBy[i].titleUpdated}</b>
+        div(class="mb-4") Thời gian chỉnh sửa *
+          p 
+            +formatDateTime(product.updatedBy[i].updatedAt)
+        div ----------------
+
+  if (product.category)
+    div(class="mb-4") Danh mục: <b>#{product.category}</b>
+
+  if (product.price)
+    div(class="mb-4") Giá: <b>#{product.price}$</b>
+
+  if (product.discountPercentage)
+    div(class="mb-4") Giảm giá: <b>#{product.discountPercentage}%</b>
+
+  if(product.newPrice)
+    div(class="mb-4") Giá hiện tại: <b>#{product.newPrice}$</b>
+
+  if (product.stock)
+    div(class="mb-4") Còn lại: <b>#{product.stock}</b>
+
+  if (product.thumbnail)
+    div(class="mb-4")
+      img(
+        src=product.thumbnail
+        style="width: 100px"
+      )
+
+  if (product.status)
+    div(class="mb-4")
+      span Trạng thái:
+      if (product.status === "active")
+        span(class="badge badge-success") Hoạt động
+      else
+        span(class="badge badge-danger") Dừng hoạt động
+
+  if (product.position)
+    div(class="mb-4") Vị trí: <b>#{product.position}</b>
+
+  if(product.description)
+    div(class="mb-4") Mô tả: !{product.description}
+
+  if (role.permissions.includes('products_edit'))
+    a(
+      href=`${prefixAdmin}/products/edit/${product.id}`
+      class="btn btn-warning btn-sm"
+    ) Điều chỉnh
+
+  script(src="/admin/js/product.js")
+

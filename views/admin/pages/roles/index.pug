@@ -1,0 +1,99 @@
+extends ../../layouts/default
+
+include ../../mixins/alert
+include ../../mixins/form-change-multi
+include ../../mixins/moment
+
+block main
+  if (role.permissions.includes('roles_view'))
+    +alert-success(5000)
+    +alert-error(5000)
+
+    h1(class='mb-4') Nhóm quyền
+
+    .card.mb-3
+      .card-header Danh sách
+      .card-body
+        .row
+          .col-md-6.d-flex
+            if (role.permissions.includes('roles_delete')) 
+              +form-change-multi(`${prefixAdmin}/roles/change-multi?_method=PATCH`, "roles")
+
+          .col-6.d-flex
+            .ml-auto
+              if (role.permissions.includes('roles_create'))
+                a(
+                  href=`${prefixAdmin}/roles/create`
+                  class='btn btn-outline-success'
+                ) + Thêm mới
+
+        table(
+          class='table table-hover table-sm'
+          checkbox-multi
+        )
+          thead
+            tr
+              th
+                if (role.permissions.includes('roles_edit'))   
+                  input(type="checkbox" name="checkall")
+              th STT
+              th Nhóm quyền
+              th Mô tả ngắn
+              th Người tạo/Thời gian tạo
+              th Người sửa/Thời gian sửa
+              th Hành động
+
+          tbody
+            if (records.length > 0)
+              each item, index in records
+                tr
+                  td 
+                    if (role.permissions.includes('roles_edit'))
+                      input(
+                        type="checkbox" 
+                        name="id"
+                        value=item.id
+                      )
+                  td #{index + 1}
+                  td #{item.title}
+                  td #{item.description}
+                  td 
+                    if (item.createdBy && item.createdBy.account_id)
+                      p #{item.createdBy.accountFullName}
+                      p 
+                        +formatDate(item.createdBy.createdAt)
+                  td
+                    if (item.updatedBy && item.updatedBy.length)
+                      - const lastUpdatedBy = item.updatedBy[item.updatedBy.length - 1]
+                      p #{lastUpdatedBy.accountFullName}
+                      p
+                        +formatDateTime(lastUpdatedBy.updatedAt)
+                  td
+                    a(
+                      class= 'btn btn-secondary btn-sm'
+                      href=`${prefixAdmin}/roles/detail/${item.id}`
+                    ) Chi tiết
+                    if (role.permissions.includes('roles_edit'))
+                      a(
+                        class= 'btn btn-warning btn-sm ml-1'
+                        href=`${prefixAdmin}/roles/edit/${item.id}`
+                      ) Sửa
+                    if (role.permissions.includes('roles_delete'))
+                      button(
+                        data-id=item.id
+                        button-delete-item
+                        class="btn btn-danger btn-sm ml-1"
+                      ) Xóa
+            else
+              tr
+                td(colspan='4' class='text-center') Chưa có nhóm quyền nào được tạo
+                
+    if (role.permissions.includes('roles_delete'))
+      form(
+        action="",
+        method="POST"
+        id="form-delete-item"
+        data-path=`${prefixAdmin}/roles/deleted`
+      )
+  else 
+    p Bạn không được cấp quyền truy cập nhóm quyền!

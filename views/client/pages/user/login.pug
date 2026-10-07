@@ -1,0 +1,35 @@
+extends ../../layouts/default.pug
+
+include ../../mixins/alert.pug
+include ../../mixins/alowPass.pug
+
+block main 
+  +alert-error(5000)
+
+  .container.my-5
+    .row.justify-content-center
+      .col-md-6.col-lg-5
+        h1.text-center.mb-4 Đăng nhập tài khoản
+
+        form(action="/user/login", method="POST", autocomplete="off")
+          .form-group
+            label(for="email") Email
+            input#email.form-control(
+              type="email",
+              name="email",
+              required,
+              placeholder="Nhập địa chỉ email"
+            )
+
+          .form-group
+            label(for="password") Mật khẩu
+            input#password.form-control(
+              type="password",
+              name="password",
+              required,
+              placeholder="Nhập password"
+            )
+
+          button.btn.btn-primary.btn-block(type="submit") Đăng ký
+
+        a(href="/user/password/forgot") Quên mật khẩu?

@@ -1,0 +1,89 @@
+extends ../../layouts/default.pug
+
+include ../../mixins/filter-status.pug
+include ../../mixins/search.pug
+include ../../mixins/form-change-multi.pug
+include ../../mixins/alert.pug
+include ../../mixins/table.pug
+include ../../mixins/moment.pug
+
+block main
+  if (role.permissions.includes('blogs-category_view'))
+    +alert-error(5000)
+    +alert-success(5000)
+
+    h1 Danh mục bài viết
+
+    .card.mb-3
+      .card-header Bộ lọc và Tìm kiếm
+      .card-body
+        .row
+
+          .col-6
+            +filterStatus(filterStatus)
+
+          .col-6
+            +search(keyword)
+
+    .card.mb-3
+      .card-header Danh sách
+        .card-body
+          .row
+            .col-md-6.d-flex
+              if (role.permissions.includes('blogs-category_edit'))
+                +form-change-multi(`${prefixAdmin}/blogs-category/change-multi?_method=PATCH`, "delete-all")
+
+            .col-6.d-flex
+              .ml-auto
+                if (role.permissions.includes('blogs-category_create'))
+                  a(
+                    href=`${prefixAdmin}/blogs-category/create`
+                    class="btn btn-outline-success"
+                  ) + thêm mới
+                a(
+                  href=`${prefixAdmin}/blogs-category/trash`
+                  class="btn btn-outline-primary"
+                )
+                  i(class="fas fa-trash")
+
+        table(
+          class="table table-hover table-sm"
+          checkbox-multi
+        )
+          thead
+            tr
+              th
+                if (role.permissions.includes('blogs-category_edit'))
+                  input(type="checkbox" name="checkall")
+              th STT
+              th Hình ảnh
+              th Tiêu đề
+              th Vị trí
+              th Trạng thái
+              th Người tạo/ Thời gian tạo
+              th Người sửa/ Thời gian sửa
+              th Hành động
+
+          tbody
+            if(records)
+              +table(records, 'blogs-category')
+
+    if (role.permissions.includes('blogs-category_edit'))
+      form(
+        action="",
+        method="POST"
+        id="form-change-status"
+        data-path=`${prefixAdmin}/blogs-category/change-status`
+      )
+
+    if (role.permissions.includes('blogs-category_delete'))
+      form(
+        action="",
+        method="POST"
+        id="form-delete-item"
+        data-path=`${prefixAdmin}/blogs-category/deleted`
+      )
+
+    script(src="/admin/js/product.js")
+  else 
+    p Bạn không được cấp quyền xem danh mục bài viết!

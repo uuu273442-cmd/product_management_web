@@ -1,0 +1,34 @@
+mixin form-change-multi(path, typeChange)
+  form(
+    action=path
+    method="POST"
+    form-change-multi
+  )
+    .d-flex.align-items-start
+      .form-group
+        select(name="type" class="form-control") 
+          option(disabled selected) -- Chọn hành động --    
+            if (typeChange != "roles")
+              option(value="active") Hoạt động
+              option(value="inactive") Dừng hoạt động
+              if (typeChange == "permanentlyDelete-all")
+                if (role.permissions.includes('products-category_delete') || role.permissions.includes('products_delete'))
+                  option(value=typeChange) Xóa vĩnh viễn
+                option(value="recovery-all") Khôi phục
+              else 
+                if (role.permissions.includes('products-category_delete') || role.permissions.includes('products_delete') || role.permissions.includes('accounts_delete'))
+                  option(value="delete-all") Xóa sản phẩm
+              if (typeChange != "accounts" || typeChange != "permanentlyDelete-all" || typeChange != "users")
+                option(value="change-position") Thay đổi vị trí
+            else 
+              option(value="delete-all") Xóa quyền
+              
+          
+      .form-group
+        input(
+          type="text"
+          name="ids"
+          value=""
+          class="form-control d-none"
+        )
+      button(type="submit" class="btn btn-primary") Áp dụng
